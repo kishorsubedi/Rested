@@ -22,7 +22,38 @@ struct title: View {
     }
 }
 
+struct alarmTime: View {
+    @State private var hour: String = ""
+    @State private var minute: String = ""
+    
+    func setAlarm(){
+        
+    }
+    
+    var body: some View {
+        HStack {
+            Text("Alarm Time: ")
+                .font(.title)
+                .padding(5)
+                .foregroundColor(.blue)
+            
+            TextField("Hour", text: $hour).frame(width: 60, height: 60)
+            Text(":")
+            TextField("Minute", text: $minute).frame(width: 60, height: 60)
+            
+            Button(action: setAlarm) {
+                Text("Set")
+            }.frame(width: 60, height: 60)
+        }
+        .opacity(0.7)
+        .cornerRadius(10)
+        .padding(5)
+    }
+}
+
 struct ContentView: View {
+    
+    var alarmSpacing = 35
     
     var currTime : String
     
@@ -47,12 +78,15 @@ struct ContentView: View {
     var body: some View {
         VStack {
             
-            Text("It's " + self.currTime)
+            Text("It's " + self.currTime).font(.title)
             
             Image("clock")
                    .resizable()
                    .scaledToFit()
                    .overlay(title(), alignment: .top)
+                   .overlay(alarmTime(), alignment: .bottomLeading)
+            
+            Text("Remember! A pre-alarm is going to wake you up " + String(alarmSpacing) + " minutes (default) before the actual alarm.").font(.headline)
         }
     }
 }
