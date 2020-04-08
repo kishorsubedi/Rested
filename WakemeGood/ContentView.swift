@@ -22,29 +22,63 @@ struct title: View {
     }
 }
 
+struct beforeAlarm: View {
+    var body: some View {
+        Text("Remember! A pre-alarm is going off 35 minutes before this time in the hope that you'd wake you up during light sleep mode for a refreshing wake! '")
+    }
+}
+
+struct afterAlarm: View {
+    var body: some View {
+        VStack{
+            Text("Alarms On! You should feel refreshing waking up to one of the two alarms. If not, report and We'll tune your spacing times.")
+            Text("Stop Alarm")
+        }
+
+    }
+}
+
+
 struct alarmTime: View {
     @State private var hour: String = ""
     @State private var minute: String = ""
     
+    @State private var alarmSet: Bool = false
+    
     func setAlarm(){
-        
+        if (self.hour != "" && self.minute != "")
+        {
+            self.alarmSet = true
+        }
     }
     
     var body: some View {
-        HStack {
-            Text("Alarm Time: ")
-                .font(.title)
-                .padding(5)
-                .foregroundColor(.blue)
-            
-            TextField("Hour", text: $hour).frame(width: 60, height: 60)
-            Text(":")
-            TextField("Minute", text: $minute).frame(width: 60, height: 60)
-            
-            Button(action: setAlarm) {
-                Text("Set")
-            }.frame(width: 60, height: 60)
+        VStack {
+            HStack {
+                Text("Alarm Time: ")
+                    .font(.title)
+                    .padding(5)
+                    .foregroundColor(.blue)
+                
+                TextField("Hour", text: $hour).frame(width: 60, height: 60)
+                Text(":")
+                TextField("Minute", text: $minute).frame(width: 60, height: 60)
+                
+                Button(action: setAlarm) {
+                    Text("Set")
+                }.frame(width: 60, height: 60)
+                
+                
+            }
+            if (alarmSet == false){
+                 beforeAlarm()
+            }
+            else{
+                afterAlarm()
+            }
+               
         }
+
         .opacity(0.7)
         .cornerRadius(10)
         .padding(5)
@@ -52,7 +86,6 @@ struct alarmTime: View {
 }
 
 struct ContentView: View {
-    
     var alarmSpacing = 35
     
     var currTime : String
@@ -77,7 +110,6 @@ struct ContentView: View {
     
     var body: some View {
         VStack {
-            
             Text("It's " + self.currTime).font(.title)
             
             Image("clock")
@@ -86,7 +118,6 @@ struct ContentView: View {
                    .overlay(title(), alignment: .top)
                    .overlay(alarmTime(), alignment: .bottomLeading)
             
-            Text("Remember! A pre-alarm is going to wake you up " + String(alarmSpacing) + " minutes (default) before the actual alarm.").font(.headline)
         }
     }
 }
