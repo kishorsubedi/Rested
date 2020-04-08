@@ -22,83 +22,60 @@ struct title: View {
     }
 }
 
-struct beforeAlarm: View {
-    var body: some View {
-        Text("Remember! A pre-alarm is going off 35 minutes before this time in the hope that you'd wake you up during light sleep mode for a refreshing wake! ")
+class Model {
+    var preAlarmHour: String
+    var preAlarmMinute: String
+    init(){
+        preAlarmHour = ""
+        preAlarmMinute = ""
     }
-}
-
-struct afterAlarm: View {
-    @State var preAlarmOn = true
-    @State var actualAlarmOn = true
-    
-    var disableToggle = true
-    
-    var hour: String
-    var minute: String
-    
-    var preAlarmHour: String = ""
-    var preAlarmMinute: String = ""
-    
-    
-    init(hour:String, minute:String, alarmsSpacing: Int){
-        self.hour = hour
-        self.minute = minute
-        setPreAlarmTime(hour:hour, minute:minute, alarmsSpacing: alarmsSpacing)
-    }
-    
-    mutating func setPreAlarmTime(hour: String, minute: String, alarmsSpacing: Int){
-        let intHour = Int(hour)
-        let intMinute = Int(minute)
-        
-        if(intMinute! >= 30){
-            preAlarmHour = hour
-            preAlarmMinute = String(intMinute!-alarmsSpacing)
-        }
-        else{
-            preAlarmMinute = String(60 - (30 - intMinute!))
-            preAlarmHour = String(intHour! - 1)
-        }
-    }
-
-    var body: some View {
-        VStack {
-            HStack{
-                    Text("Pre Alarm At:      ")
-                    
-                    Toggle(isOn: $preAlarmOn) {
-                        Text("\t" + preAlarmHour + ":" + preAlarmMinute)
-                    }.disabled(disableToggle)
-                }
-            
-                HStack{
-                    Text("Actual Alarm At: ")
-                    
-                    Toggle(isOn: $actualAlarmOn) {
-                        Text("\t" + self.hour + ":" + self.minute)
-                    }.disabled(disableToggle)
-                }
-        }
-            
+    func setPreAlarmTime(hour: String, minute: String, alarmsSpacing: Int){
+              let intHour = Int(hour)
+              let intMinute = Int(minute)
+              
+              if(intMinute! >= alarmsSpacing){
+                   preAlarmHour = hour
+                   preAlarmMinute = String(intMinute! - alarmsSpacing)
+              }
+              else{
+                   preAlarmMinute = String(60 - (alarmsSpacing - intMinute!))
+                   preAlarmHour = String(intHour! - 1)
+              }
     }
 }
 
 struct alarmTime: View {
     @State private var hour: String = ""
     @State private var minute: String = ""
+    @State private var alarmsSpacing: Int = 30
+    @State var sleepQuality: String = "";
+    
+    @State var preAlarmToggle = true
+    @State var alarmToggle = true
     
     @State private var alarmSet: Bool = false
-    var alarmsSpacing = 30
+    
+    var model = Model()
+    
+    init(alarmsSpacing: Int){
+        self.alarmsSpacing = alarmsSpacing
+    }
     
     func setAlarm(){
         if (self.hour != "" && self.minute != "")
         {
             self.alarmSet = true
+            model.setPreAlarmTime(hour: self.hour, minute: self.minute, alarmsSpacing: alarmsSpacing)
         }
     }
     
     func cancelAlarm(){
         self.alarmSet = false
+    }
+    
+    func spaceOutAlarms(){
+        alarmsSpacing += 10
+        alarmSet = false
     }
     
     var body: some View {
@@ -137,14 +114,50 @@ struct alarmTime: View {
                 
             
             if (alarmSet == false){
-                 beforeAlarm()
+                 Text("Remember! A pre-alarm is going off 35 minutes before this time in the hope that you'd wake you up during light sleep mode for a refreshing wake! ")
             }
             else{
-                afterAlarm(hour: self.hour, minute: self.minute, alarmsSpacing: alarmsSpacing)
+                
+                VStack {
+                    HStack{
+                            Text("Pre Alarm At:      ")
+                            
+                            Toggle(isOn: $preAlarmToggle) {
+                                Text("\t" + model.preAlarmHour + ":" + model.preAlarmMinute)
+                            }.disabled(true)
+                        }
+                    
+                    HStack{
+                        Text("Actual Alarm At: ")
+                        
+                        Toggle(isOn: $alarmToggle) {
+                            Text("\t" + self.hour + ":" + self.minute)
+                        }.disabled(true)
+                    }
+                    
+                   // Image().resizable().scaledToFit()
+                    
+                    HStack {
+                        
+                        Text("Rate your waking experience").bold()
+                        
+                        Image("Screen Shot 2020-04-08 at 2.16.24 AM").resizable().frame(width: 150.0, height: 42.0).scaledToFit()
+
+                    }
+                    
+                    Text("If you felt extra drowsy on both the alarms And sleep affecting factors like coffee/wine/excessive workout weren't the cause, Proceed to click the button below: ").lineLimit(4).frame(width: 400, height: 100, alignment: .center)
+                    
+                    Button(action: spaceOutAlarms) {
+                   Text("Increase your alarms spacing time by 10 minutes")
+                   }.background(Color.red).opacity(0.95)
+                   .foregroundColor(.white)
+                                               
+                }
+                
             }
+
                
         }
-
         .opacity(0.7)
         .cornerRadius(10)
         .padding(5)
@@ -175,13 +188,13 @@ struct ContentView: View {
     
     var body: some View {
         VStack {
+            title()
+            
             Text("It's " + self.currTime).font(.title)
             
-            Image("clock")
-                   .resizable()
-                   .scaledToFit()
-                   .overlay(title(), alignment: .top)
-                   .overlay(alarmTime(), alignment: .bottomLeading)
+            Image("clock").resizable().frame(width: 300, height: 230, alignment: .center).scaledToFit().padding()
+            
+            alarmTime(alarmsSpacing: 30)
             
         }
     }
