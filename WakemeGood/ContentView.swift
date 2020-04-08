@@ -24,7 +24,7 @@ struct title: View {
 
 struct beforeAlarm: View {
     var body: some View {
-        Text("Remember! A pre-alarm is going off 35 minutes before this time in the hope that you'd wake you up during light sleep mode for a refreshing wake! '")
+        Text("Remember! A pre-alarm is going off 35 minutes before this time in the hope that you'd wake you up during light sleep mode for a refreshing wake! ")
     }
 }
 
@@ -97,24 +97,45 @@ struct alarmTime: View {
         }
     }
     
+    func cancelAlarm(){
+        self.alarmSet = false
+    }
+    
     var body: some View {
         VStack {
-            HStack {
-                Text("Alarm Time: ")
-                    .font(.title)
-                    .padding(5)
-                    .foregroundColor(.blue)
-                
-                TextField("Hour", text: $hour).frame(width: 60, height: 60)
-                Text(":")
-                TextField("Minute", text: $minute).frame(width: 60, height: 60)
-                
-                Button(action: setAlarm) {
-                    Text("Set")
-                }.frame(width: 60, height: 60)
-                
-                
+           
+            if (alarmSet == false){
+                HStack {
+                    Text("Alarm Time: ")
+                                        .font(.title)
+                                        .padding(5)
+                                        .foregroundColor(.blue)
+                                    
+                    TextField("Hour", text: $hour).frame(width: 60, height: 60)
+                    Text(":")
+                    TextField("Minute", text: $minute).frame(width: 60, height: 60)
+                    
+                    Button(action: setAlarm) {
+                        Text("Set")
+                    }.frame(width: 60, height: 60)
+                }
             }
+            else{
+                HStack {
+                    Text("Alarms Set!")
+                                        .font(.title)
+                                        .padding(5)
+                                        .foregroundColor(.blue)
+                    Spacer()
+                    
+                    Button(action: cancelAlarm) {
+                        Text("Reset Alarms")
+                        }.background(Color.red).opacity(0.9)
+                        .foregroundColor(.white)
+                }
+            }
+                
+            
             if (alarmSet == false){
                  beforeAlarm()
             }
