@@ -29,21 +29,66 @@ struct beforeAlarm: View {
 }
 
 struct afterAlarm: View {
-    var body: some View {
-        VStack{
-            Text("Alarms On! You should feel refreshing waking up to one of the two alarms. If not, report and We'll tune your spacing times.")
-            Text("Stop Alarm")
+    @State var preAlarmOn = true
+    @State var actualAlarmOn = true
+    
+    var disableToggle = true
+    
+    var hour: String
+    var minute: String
+    
+    var preAlarmHour: String = ""
+    var preAlarmMinute: String = ""
+    
+    
+    init(hour:String, minute:String, alarmsSpacing: Int){
+        self.hour = hour
+        self.minute = minute
+        setPreAlarmTime(hour:hour, minute:minute, alarmsSpacing: alarmsSpacing)
+    }
+    
+    mutating func setPreAlarmTime(hour: String, minute: String, alarmsSpacing: Int){
+        let intHour = Int(hour)
+        let intMinute = Int(minute)
+        
+        if(intMinute! >= 30){
+            preAlarmHour = hour
+            preAlarmMinute = String(intMinute!-alarmsSpacing)
         }
+        else{
+            preAlarmMinute = String(60 - (30 - intMinute!))
+            preAlarmHour = String(intHour! - 1)
+        }
+    }
 
+    var body: some View {
+        VStack {
+            HStack{
+                    Text("Pre Alarm At:      ")
+                    
+                    Toggle(isOn: $preAlarmOn) {
+                        Text("\t" + preAlarmHour + ":" + preAlarmMinute)
+                    }.disabled(disableToggle)
+                }
+            
+                HStack{
+                    Text("Actual Alarm At: ")
+                    
+                    Toggle(isOn: $actualAlarmOn) {
+                        Text("\t" + self.hour + ":" + self.minute)
+                    }.disabled(disableToggle)
+                }
+        }
+            
     }
 }
-
 
 struct alarmTime: View {
     @State private var hour: String = ""
     @State private var minute: String = ""
     
     @State private var alarmSet: Bool = false
+    var alarmsSpacing = 30
     
     func setAlarm(){
         if (self.hour != "" && self.minute != "")
@@ -74,7 +119,7 @@ struct alarmTime: View {
                  beforeAlarm()
             }
             else{
-                afterAlarm()
+                afterAlarm(hour: self.hour, minute: self.minute, alarmsSpacing: alarmsSpacing)
             }
                
         }
@@ -86,7 +131,6 @@ struct alarmTime: View {
 }
 
 struct ContentView: View {
-    var alarmSpacing = 35
     
     var currTime : String
     
