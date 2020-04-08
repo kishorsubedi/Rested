@@ -145,7 +145,7 @@ struct alarmTime: View {
 
                     }
                     
-                    Text("If you felt extra drowsy on both the alarms And sleep affecting factors like coffee/wine/excessive workout weren't the cause, Proceed to click the button below: ").lineLimit(4).frame(width: 400, height: 100, alignment: .center)
+                    Text("If you felt extra drowsy on both the alarms, and any one of the sleep affecting factors like coffee/wine/excessive workout/heartbreak weren't the cause, Proceed to click the button below: ").lineLimit(4).frame(width: 400, height: 100, alignment: .center)
                     
                     Button(action: spaceOutAlarms) {
                    Text("Increase your alarms spacing time by 10 minutes")
