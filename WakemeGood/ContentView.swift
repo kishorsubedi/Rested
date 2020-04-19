@@ -99,8 +99,8 @@ struct alarmTime: View {
             }
             else{
                 HStack {
-                    Text("Alarms Set!")
-                                        .font(.title)
+                    Text("Pre Alarm Ringing! Sound Level 3/5")
+                                        .font(.subheadline)
                                         .padding(5)
                                         .foregroundColor(.blue)
                     Spacer()
@@ -114,7 +114,7 @@ struct alarmTime: View {
                 
             
             if (alarmSet == false){
-                 Text("Remember! A pre-alarm is going off 35 minutes before this time in the hope that you'd wake you up during light sleep mode for a refreshing wake! ")
+                 Text("Remember! A pre-alarm is going off 30 minutes before this time in the hope that you'd wake you up during light sleep mode for a refreshing wake! ")
             }
             else{
                 
