@@ -11,7 +11,7 @@ import SwiftUI
 struct title: View {
     var body: some View {
         ZStack {
-            Text("WakeMeGood")
+            Text("Rested")
                 .font(.largeTitle)
                 .padding(21)
                 .foregroundColor(.white)
@@ -53,7 +53,7 @@ struct alarmTime: View {
     @State var preAlarmToggle = true
     @State var alarmToggle = true
     
-    @State private var alarmSet: Bool = false
+    @State public var alarmSet: Bool = false
     
     var model = Model()
     
@@ -80,7 +80,16 @@ struct alarmTime: View {
     
     var body: some View {
         VStack {
-           
+            
+            if(self.alarmSet == true){
+                   Image("sleeping").resizable().frame(width: 300, height: 230, alignment: .center).scaledToFit().padding()
+               }
+               else
+               {
+                   Image("clock").resizable().frame(width: 300, height: 230, alignment: .center).scaledToFit().padding()
+               }
+               
+   
             if (alarmSet == false){
                 HStack {
                     Text("Alarm Time: ")
@@ -99,7 +108,7 @@ struct alarmTime: View {
             }
             else{
                 HStack {
-                    Text("Pre Alarm Ringing! Sound Level 3/5")
+                    Text("Alarms Set!")
                                         .font(.subheadline)
                                         .padding(5)
                                         .foregroundColor(.blue)
@@ -170,10 +179,10 @@ struct ContentView: View {
     
     init() {
         self.currTime = ""
-        self.currTime = findCurrTime()
+        self.currTime = self.findCurrTime()
     }
     
-//    func isToTheRightOf(x: String) -> String {
+//    func isToTheRightOf(x: String) -> tring {
     func findCurrTime()-> String {
         let currentDate = Date()
         let dateFormatter = DateFormatter()
@@ -192,10 +201,8 @@ struct ContentView: View {
             
             Text("It's " + self.currTime).font(.title)
             
-            Image("clock").resizable().frame(width: 300, height: 230, alignment: .center).scaledToFit().padding()
-            
+           
             alarmTime(alarmsSpacing: 30)
-            
         }
     }
 }
